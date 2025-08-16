@@ -1,3 +1,6 @@
+# Repo Configs
+update-github-secrets.sh
+
 # Logs
 logs
 *.log
