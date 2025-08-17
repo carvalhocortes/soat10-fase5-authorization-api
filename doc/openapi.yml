@@ -1,0 +1,199 @@
+openapi: 3.1.1
+
+info:
+  title: API de Autenticação de Clientes
+
+  version: 1.1.0
+
+  summary: Emissão e validação de tokens de acesso para clientes
+
+  description: |
+    API responsável por autenticar clientes e emitir tokens JWT de acesso.
+    Utilize o endpoint /auth para obter um token. Endpoints protegidos deverão
+    utilizar o esquema Bearer JWT no cabeçalho Authorization.
+
+  contact:
+    name: Suporte
+    email: suporte@example.com
+
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+tags:
+  - name: Autenticação
+    description: Operações relacionadas ao fluxo de autenticação
+
+servers:
+  - url: http://localhost:3333
+    description: Ambiente local de desenvolvimento
+
+paths:
+  /auth:
+    post:
+      tags:
+        - Autenticação
+      operationId: issueClientToken
+      summary: Autenticar cliente e emitir token
+      description: Valida as credenciais do cliente e retorna um token JWT de acesso.
+      requestBody:
+        required: true
+        description: Credenciais do cliente para autenticação
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            examples:
+              CredenciaisValidas:
+                $ref: '#/components/examples/AuthRequestExampleValido'
+              EmailInvalido:
+                $ref: '#/components/examples/AuthRequestExampleEmailInvalido'
+      responses:
+        '200':
+          $ref: '#/components/responses/AuthSuccess'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      security: []
+
+components:
+  schemas:
+    AuthRequest:
+      title: AuthRequest
+      type: object
+      additionalProperties: false
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email cadastrado do cliente
+        password:
+          type: string
+          description: Senha do cliente
+          minLength: 6
+          maxLength: 128
+
+    AuthResponse:
+      title: AuthResponse
+      type: object
+      description: Dados retornados após autenticação bem-sucedida
+      required:
+        - token
+        - token_type
+        - expires_in
+      properties:
+        token:
+          type: string
+          description: Token JWT assinado
+          minLength: 20
+        token_type:
+          type: string
+          description: Tipo do token para uso no cabeçalho Authorization
+          examples: [Bearer]
+        expires_in:
+          type: integer
+          description: Tempo de expiração em segundos
+          examples: [3600]
+
+    Error:
+      title: Error
+      type: object
+      description: Estrutura padrão de erro
+      properties:
+        httpCode:
+          type: integer
+          description: Código HTTP retornado
+        internalCode:
+          type: string
+          description: Código interno categorizando o erro
+        message:
+          type: string
+          description: Descrição legível do erro
+
+  responses:
+    AuthSuccess:
+      description: Autenticação realizada com sucesso
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthResponse'
+          examples:
+            Sucesso:
+              $ref: '#/components/examples/AuthResponseExampleSucesso'
+
+    BadRequest:
+      description: Requisição inválida (erro de validação ou formato)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/BadRequestError'
+
+    Unauthorized:
+      description: Credenciais inválidas ou não autorizadas
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Unauthorized:
+              $ref: '#/components/examples/UnauthorizedError'
+
+    InternalServerError:
+      description: Erro inesperado no servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            InternalServerError:
+              $ref: '#/components/examples/InternalServerError'
+
+  examples:
+    AuthRequestExampleValido:
+      summary: Requisição válida
+      value:
+        email: cliente@exemplo.com
+        password: senha123
+
+    AuthRequestExampleEmailInvalido:
+      summary: Email em formato inválido
+      value:
+        email: cliente_invalido
+        password: senha123
+
+    AuthResponseExampleSucesso:
+      summary: Retorno de autenticação bem-sucedida
+      value:
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.exemplo.de.payload.assinado
+        token_type: Bearer
+        expires_in: 3600
+
+    BadRequestError:
+      summary: Erro de requisição inválida
+      value:
+        httpCode: 400
+        internalCode: BAD_REQUEST
+        message: Erro na requisição
+
+    UnauthorizedError:
+      summary: Erro de autenticação
+      value:
+        httpCode: 401
+        internalCode: UNAUTHORIZED
+        message: Não autorizado
+
+    InternalServerError:
+      summary: Erro interno do servidor
+      value:
+        httpCode: 500
+        internalCode: INTERNAL_SERVER_ERROR
+        message: Erro interno do servidor
