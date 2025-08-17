@@ -163,3 +163,25 @@ ehthumbs_vista.db
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.tfplan
+*.auto.tfvars
+
+# Lambda package
+lambda.zip
+*.zip
+
+# AWS
+.aws/
+
+# Jest
+jest_0
+
+# Husky
+.husky/_
