@@ -61,7 +61,6 @@ describe('createUserHandler', () => {
     const requestBody = JSON.stringify({
       email: 'test@example.com',
       password: 'password123',
-      name: 'Test User',
     });
 
     const mockCreateUserResult = {
@@ -82,7 +81,6 @@ describe('createUserHandler', () => {
     expect(mockExecute).toHaveBeenCalledWith({
       email: 'test@example.com',
       password: 'password123',
-      name: 'Test User',
     });
   });
 

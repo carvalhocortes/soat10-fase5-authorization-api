@@ -21,7 +21,6 @@ describe('CreateUser', () => {
       const request: CreateUserRequest = {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User',
       };
 
       const mockRepositoryResult = {
@@ -33,7 +32,7 @@ describe('CreateUser', () => {
 
       const result = await createUserUseCase.execute(request);
 
-      expect(mockRepository.createUser).toHaveBeenCalledWith(request.email, request.password, request.name);
+      expect(mockRepository.createUser).toHaveBeenCalledWith(request.email, request.password);
       expect(mockRepository.createUser).toHaveBeenCalledTimes(1);
 
       const expectedResponse: CreateUserResponse = {
@@ -60,7 +59,7 @@ describe('CreateUser', () => {
 
       const result = await createUserUseCase.execute(request);
 
-      expect(mockRepository.createUser).toHaveBeenCalledWith(request.email, request.password, undefined);
+      expect(mockRepository.createUser).toHaveBeenCalledWith(request.email, request.password);
       expect(mockRepository.createUser).toHaveBeenCalledTimes(1);
 
       const expectedResponse: CreateUserResponse = {
@@ -141,7 +140,6 @@ describe('CreateUser', () => {
       const request: CreateUserRequest = {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User',
       };
 
       const repositoryError = new Error('Cognito service error');
@@ -149,14 +147,13 @@ describe('CreateUser', () => {
 
       await expect(createUserUseCase.execute(request)).rejects.toThrow('Cognito service error');
 
-      expect(mockRepository.createUser).toHaveBeenCalledWith(request.email, request.password, request.name);
+      expect(mockRepository.createUser).toHaveBeenCalledWith(request.email, request.password);
     });
 
     it('should handle complex email formats', async () => {
       const request: CreateUserRequest = {
         email: 'user.name+tag@example.co.uk',
         password: 'password123',
-        name: 'Test User',
       };
 
       const mockRepositoryResult = {
@@ -168,7 +165,7 @@ describe('CreateUser', () => {
 
       const result = await createUserUseCase.execute(request);
 
-      expect(mockRepository.createUser).toHaveBeenCalledWith('user.name+tag@example.co.uk', 'password123', 'Test User');
+      expect(mockRepository.createUser).toHaveBeenCalledWith('user.name+tag@example.co.uk', 'password123');
 
       expect(result.email).toBe('user.name+tag@example.co.uk');
       expect(result.userSub).toBe('user-sub-789');
@@ -178,7 +175,6 @@ describe('CreateUser', () => {
       const request: CreateUserRequest = {
         email: 'test@example.com',
         password: 'very-long-password-with-special-characters-123!@#',
-        name: 'Test User',
       };
 
       const mockRepositoryResult = {
@@ -193,7 +189,6 @@ describe('CreateUser', () => {
       expect(mockRepository.createUser).toHaveBeenCalledWith(
         'test@example.com',
         'very-long-password-with-special-characters-123!@#',
-        'Test User',
       );
     });
   });

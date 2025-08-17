@@ -60,7 +60,6 @@ describe('Integration Tests', () => {
       const result = await createUser.execute({
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User',
       });
 
       expect(result).toEqual({
@@ -69,7 +68,7 @@ describe('Integration Tests', () => {
         message: 'Usuário criado com sucesso',
       });
 
-      expect(mockRepo.createUser).toHaveBeenCalledWith('test@example.com', 'password123', 'Test User');
+      expect(mockRepo.createUser).toHaveBeenCalledWith('test@example.com', 'password123');
     });
 
     it('should validate required fields before calling repository', async () => {
@@ -156,7 +155,6 @@ describe('Integration Tests', () => {
     it('should maintain data integrity from input to output in CreateUser', async () => {
       const testEmail = 'create.integration@example.com';
       const testPassword = 'createPassword123';
-      const testName = 'Create Integration User';
 
       const mockCreateResult = {
         userSub: 'integration-user-sub',
@@ -173,10 +171,9 @@ describe('Integration Tests', () => {
       const result = await createUser.execute({
         email: testEmail,
         password: testPassword,
-        name: testName,
       });
 
-      expect(mockRepo.createUser).toHaveBeenCalledWith(testEmail, testPassword, testName);
+      expect(mockRepo.createUser).toHaveBeenCalledWith(testEmail, testPassword);
       expect(result).toEqual({
         userSub: 'integration-user-sub',
         email: testEmail,

@@ -82,7 +82,7 @@ describe('CognitoClientRepository', () => {
       expect(result).toEqual(mockAuthResult);
     });
 
-    it('should return undefined when authentication fails', async () => {
+    it('should throw error when authentication result is undefined', async () => {
       const email = 'test@example.com';
       const password = 'wrongpassword';
 
@@ -90,9 +90,7 @@ describe('CognitoClientRepository', () => {
         AuthenticationResult: undefined,
       });
 
-      const result = await repository.authorizeByLogin(email, password);
-
-      expect(result).toBeUndefined();
+      await expect(repository.authorizeByLogin(email, password)).rejects.toThrow('Invalid email or password');
     });
 
     it('should throw error when Cognito service fails', async () => {
@@ -147,49 +145,6 @@ describe('CognitoClientRepository', () => {
         },
       });
 
-      const result = await repository.createUser(email, password, name);
-
-      expect(MockedAdminCreateUserCommand).toHaveBeenCalledWith({
-        UserPoolId: 'us-east-1_testpool',
-        Username: email,
-        TemporaryPassword: password,
-        MessageAction: 'SUPPRESS',
-        UserAttributes: [
-          {
-            Name: 'email',
-            Value: email,
-          },
-          {
-            Name: 'email_verified',
-            Value: 'true',
-          },
-          {
-            Name: 'name',
-            Value: name,
-          },
-        ],
-      });
-
-      expect(mockSend).toHaveBeenCalledTimes(1);
-      expect(result).toEqual({
-        userSub: 'user-sub-123',
-        email: email,
-      });
-    });
-
-    it('should successfully create user without name parameter', async () => {
-      const email = 'test@example.com';
-      const password = 'password123';
-
-      mockSend.mockResolvedValue({
-        User: {
-          Attributes: [
-            { Name: 'sub', Value: 'user-sub-456' },
-            { Name: 'email', Value: email },
-          ],
-        },
-      });
-
       const result = await repository.createUser(email, password);
 
       expect(MockedAdminCreateUserCommand).toHaveBeenCalledWith({
@@ -209,8 +164,9 @@ describe('CognitoClientRepository', () => {
         ],
       });
 
+      expect(mockSend).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
-        userSub: 'user-sub-456',
+        userSub: 'user-sub-123',
         email: email,
       });
     });
@@ -218,18 +174,14 @@ describe('CognitoClientRepository', () => {
     it('should handle missing sub attribute', async () => {
       const email = 'test@example.com';
       const password = 'password123';
-      const name = 'Test User';
 
       mockSend.mockResolvedValue({
         User: {
-          Attributes: [
-            { Name: 'email', Value: email },
-            { Name: 'name', Value: name },
-          ],
+          Attributes: [{ Name: 'email', Value: email }],
         },
       });
 
-      const result = await repository.createUser(email, password, name);
+      const result = await repository.createUser(email, password);
 
       expect(result).toEqual({
         userSub: '',
@@ -274,18 +226,16 @@ describe('CognitoClientRepository', () => {
     it('should throw error when Cognito service fails', async () => {
       const email = 'test@example.com';
       const password = 'password123';
-      const name = 'Test User';
 
       const cognitoError = new Error('User already exists');
       mockSend.mockRejectedValue(cognitoError);
 
-      await expect(repository.createUser(email, password, name)).rejects.toThrow('User already exists');
+      await expect(repository.createUser(email, password)).rejects.toThrow('User already exists');
     });
 
     it('should handle complex email formats', async () => {
       const email = 'user.name+tag@example.co.uk';
       const password = 'password123';
-      const name = 'Test User';
 
       mockSend.mockResolvedValue({
         User: {
@@ -296,45 +246,7 @@ describe('CognitoClientRepository', () => {
         },
       });
 
-      await repository.createUser(email, password, name);
-
-      expect(MockedAdminCreateUserCommand).toHaveBeenCalledWith({
-        UserPoolId: 'us-east-1_testpool',
-        Username: email,
-        TemporaryPassword: password,
-        MessageAction: 'SUPPRESS',
-        UserAttributes: [
-          {
-            Name: 'email',
-            Value: email,
-          },
-          {
-            Name: 'email_verified',
-            Value: 'true',
-          },
-          {
-            Name: 'name',
-            Value: name,
-          },
-        ],
-      });
-    });
-
-    it('should handle empty name parameter', async () => {
-      const email = 'test@example.com';
-      const password = 'password123';
-      const name = '';
-
-      mockSend.mockResolvedValue({
-        User: {
-          Attributes: [
-            { Name: 'sub', Value: 'user-sub-empty-name' },
-            { Name: 'email', Value: email },
-          ],
-        },
-      });
-
-      const result = await repository.createUser(email, password, name);
+      await repository.createUser(email, password);
 
       expect(MockedAdminCreateUserCommand).toHaveBeenCalledWith({
         UserPoolId: 'us-east-1_testpool',
@@ -352,8 +264,6 @@ describe('CognitoClientRepository', () => {
           },
         ],
       });
-
-      expect(result.userSub).toBe('user-sub-empty-name');
     });
   });
 
