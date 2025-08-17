@@ -1,21 +1,15 @@
-openapi: 3.1.1
+openapi: 3.0.4
 
 info:
   title: API de Autenticação de Clientes
-
   version: 1.1.0
-
-  summary: Emissão e validação de tokens de acesso para clientes
-
   description: |
     API responsável por autenticar clientes e emitir tokens JWT de acesso.
     Utilize o endpoint /auth para obter um token. Endpoints protegidos deverão
     utilizar o esquema Bearer JWT no cabeçalho Authorization.
-
   contact:
     name: Suporte
     email: suporte@example.com
-
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -95,11 +89,11 @@ components:
         token_type:
           type: string
           description: Tipo do token para uso no cabeçalho Authorization
-          examples: [Bearer]
+          example: Bearer
         expires_in:
           type: integer
           description: Tempo de expiração em segundos
-          examples: [3600]
+          example: 3600
 
     Error:
       title: Error
