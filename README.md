@@ -211,6 +211,23 @@ __tests__/
 └── integration/    # Testes de integração
 ```
 
+### Cobertura de Testes
+
+| Arquivo                                       | % Statements | % Branch | % Functions | % Lines  |
+| --------------------------------------------- | ------------ | -------- | ----------- | -------- |
+| **All files**                                 | **100%**     | **100%** | **100%**    | **100%** |
+| src/index.ts                                  | 100%         | 100%     | 100%        | 100%     |
+| src/application/Authenticate.ts               | 100%         | 100%     | 100%        | 100%     |
+| src/application/CreateUser.ts                 | 100%         | 100%     | 100%        | 100%     |
+| src/domain/Client.ts                          | 100%         | 100%     | 100%        | 100%     |
+| src/domain/CustomErrors.ts                    | 100%         | 100%     | 100%        | 100%     |
+| src/handlers/authHandler.ts                   | 100%         | 100%     | 100%        | 100%     |
+| src/handlers/createUserHandler.ts             | 100%         | 100%     | 100%        | 100%     |
+| src/infrastructure/CognitoClientRepository.ts | 100%         | 100%     | 100%        | 100%     |
+
+**Total de Testes:** 74 passed ✅
+**Test Suites:** 9 passed ✅
+
 ## 📖 Documentação da API
 
 ### OpenAPI/Swagger
@@ -307,8 +324,8 @@ SOAT10 - FIAP Pós-Graduação em Arquitetura de Software
 
 ### Desenvolvedores:
 
-Fernando Carvalho de Paula Cortes - rm360486
-Samuel Victor Santos - rm360487
+- Fernando Carvalho de Paula Cortes - rm360486
+- Samuel Victor Santos - rm360487
 
 ## 📄 Licença
 
