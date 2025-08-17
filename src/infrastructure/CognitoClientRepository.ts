@@ -1,4 +1,5 @@
 import {
+  AdminCreateUserCommand,
   AdminInitiateAuthCommand,
   AuthenticationResultType,
   CognitoIdentityProviderClient,
@@ -6,6 +7,7 @@ import {
 
 export interface ClientRepository {
   authorizeByLogin(email: string, password: string): Promise<AuthenticationResultType | undefined>;
+  createUser(email: string, password: string, name?: string): Promise<{ userSub: string; email: string }>;
 }
 
 export class CognitoClientRepository implements ClientRepository {
@@ -27,5 +29,40 @@ export class CognitoClientRepository implements ClientRepository {
       }),
     );
     return authResult.AuthenticationResult;
+  }
+
+  async createUser(email: string, password: string, name?: string) {
+    const userAttributes = [
+      {
+        Name: 'email',
+        Value: email,
+      },
+      {
+        Name: 'email_verified',
+        Value: 'true',
+      },
+    ];
+
+    if (name) {
+      userAttributes.push({
+        Name: 'name',
+        Value: name,
+      });
+    }
+
+    const createResult = await this.client.send(
+      new AdminCreateUserCommand({
+        UserPoolId: this.poolId,
+        Username: email,
+        TemporaryPassword: password,
+        MessageAction: 'SUPPRESS',
+        UserAttributes: userAttributes,
+      }),
+    );
+
+    return {
+      userSub: createResult.User?.Attributes?.find((attr) => attr.Name === 'sub')?.Value || '',
+      email,
+    };
   }
 }

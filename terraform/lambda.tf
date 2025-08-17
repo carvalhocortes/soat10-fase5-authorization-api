@@ -8,7 +8,7 @@ resource "aws_lambda_function" "auth" {
   function_name    = "auth"
   filename         = "./lambda.zip"
   source_code_hash = filebase64sha256("./lambda.zip")
-  handler          = "index.handler"
+  handler          = "index.authHandler"
   runtime          = "nodejs22.x"
   role             = "arn:aws:iam::${var.aws_account_id}:role/LabRole"
   timeout          = 10
