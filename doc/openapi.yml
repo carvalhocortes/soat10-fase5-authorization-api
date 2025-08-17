@@ -4,9 +4,8 @@ info:
   title: API de Autenticação de Clientes
   version: 1.1.0
   description: |
-    API responsável por autenticar clientes e emitir tokens JWT de acesso.
-    Utilize o endpoint /auth para obter um token. Endpoints protegidos deverão
-    utilizar o esquema Bearer JWT no cabeçalho Authorization.
+    API responsável por autenticar clientes e criar novos usuários utilizando AWS Cognito.
+
   contact:
     name: Suporte
     email: suporte@example.com
@@ -17,6 +16,8 @@ info:
 tags:
   - name: Autenticação
     description: Operações relacionadas ao fluxo de autenticação
+  - name: Usuários
+    description: Operações relacionadas ao gerenciamento de usuários
 
 servers:
   - url: http://localhost:3333
@@ -28,8 +29,9 @@ paths:
       tags:
         - Autenticação
       operationId: issueClientToken
-      summary: Autenticar cliente e emitir token
-      description: Valida as credenciais do cliente e retorna um token JWT de acesso.
+      summary: Autenticar cliente e obter tokens
+      description: |
+        Valida as credenciais do cliente no AWS Cognito e retorna os tokens de acesso.
       requestBody:
         required: true
         description: Credenciais do cliente para autenticação
@@ -52,6 +54,33 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
       security: []
+  /users:
+    post:
+      tags:
+        - Usuários
+      operationId: createUser
+      summary: Criar um novo usuário
+      description: |
+        Cria um novo usuário no pool do AWS Cognito.
+      requestBody:
+        required: true
+        description: Dados do usuário a ser criado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+            examples:
+              UsuarioValido:
+                $ref: '#/components/examples/CreateUserRequestExampleValido'
+              EmailInvalido:
+                $ref: '#/components/examples/CreateUserRequestExampleEmailInvalido'
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateUserSuccess'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   schemas:
@@ -73,27 +102,75 @@ components:
           minLength: 6
           maxLength: 128
 
+    CreateUserRequest:
+      title: CreateUserRequest
+      type: object
+      additionalProperties: false
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email do usuário a ser criado
+        password:
+          type: string
+          description: Senha do usuário
+          minLength: 6
+          maxLength: 128
+        name:
+          type: string
+          description: Nome do usuário (opcional)
+
+    CreateUserResponse:
+      title: CreateUserResponse
+      type: object
+      description: Dados retornados após criação bem-sucedida do usuário
+      required:
+        - userSub
+        - email
+        - message
+      properties:
+        userSub:
+          type: string
+          description: ID único do usuário no AWS Cognito
+          example: '12345678-1234-1234-1234-123456789012'
+        email:
+          type: string
+          format: email
+          description: Email do usuário criado
+          example: 'usuario@exemplo.com'
+        message:
+          type: string
+          description: Mensagem de confirmação
+          example: 'Usuário criado com sucesso'
+
     AuthResponse:
       title: AuthResponse
       type: object
       description: Dados retornados após autenticação bem-sucedida
-      required:
-        - token
-        - token_type
-        - expires_in
       properties:
-        token:
+        AccessToken:
           type: string
-          description: Token JWT assinado
-          minLength: 20
-        token_type:
+          description: Token de acesso AWS Cognito
+          example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...'
+        RefreshToken:
           type: string
-          description: Tipo do token para uso no cabeçalho Authorization
-          example: Bearer
-        expires_in:
+          description: Token de refresh para renovação de acesso
+          example: 'eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ...'
+        IdToken:
+          type: string
+          description: Token de identidade contendo informações do usuário
+          example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...'
+        ExpiresIn:
           type: integer
-          description: Tempo de expiração em segundos
+          description: Tempo de expiração do AccessToken em segundos
           example: 3600
+        TokenType:
+          type: string
+          description: Tipo do token
+          example: 'Bearer'
 
     Error:
       title: Error
@@ -120,6 +197,16 @@ components:
           examples:
             Sucesso:
               $ref: '#/components/examples/AuthResponseExampleSucesso'
+
+    CreateUserSuccess:
+      description: Usuário criado com sucesso
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateUserResponse'
+          examples:
+            Sucesso:
+              $ref: '#/components/examples/CreateUserResponseExampleSucesso'
 
     BadRequest:
       description: Requisição inválida (erro de validação ou formato)
@@ -161,29 +248,51 @@ components:
     AuthRequestExampleEmailInvalido:
       summary: Email em formato inválido
       value:
-        email: cliente_invalido
+        email: cliente_exemplo
         password: senha123
+
+    CreateUserRequestExampleValido:
+      summary: Requisição válida para criação de usuário
+      value:
+        email: usuario@exemplo.com
+        password: minhasenha123
+        name: João Silva
+
+    CreateUserRequestExampleEmailInvalido:
+      summary: Email em formato inválido para criação
+      value:
+        email: usuario@exemplo.com
+        password: minhasenha123
+
+    CreateUserResponseExampleSucesso:
+      summary: Retorno de criação de usuário bem-sucedida
+      value:
+        userSub: '12345678-1234-1234-1234-123456789012'
+        email: 'usuario@exemplo.com'
+        message: 'Usuário criado com sucesso'
 
     AuthResponseExampleSucesso:
       summary: Retorno de autenticação bem-sucedida
       value:
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.exemplo.de.payload.assinado
-        token_type: Bearer
-        expires_in: 3600
+        AccessToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC0xMjM0LTEyMzQtMTIzNC0xMjM0NTY3ODkwMTIiLCJhdWQiOiJhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ejEyMzQ1Njc4OTAiLCJjb2duaXRvOnVzZXJuYW1lIjoidXNlckBleGFtcGxlLmNvbSIsImV4cCI6MTcwMDAwMDAwMCwiaWF0IjoxNjk5OTk2NDAwfQ.signature'
+        RefreshToken: 'eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.refreshTokenExample'
+        IdToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC0xMjM0LTEyMzQtMTIzNC0xMjM0NTY3ODkwMTIiLCJhdWQiOiJhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ejEyMzQ1Njc4OTAiLCJjb2duaXRvOnVzZXJuYW1lIjoidXNlckBleGFtcGxlLmNvbSIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImV4cCI6MTcwMDAwMDAwMCwiaWF0IjoxNjk5OTk2NDAwfQ.signature'
+        ExpiresIn: 3600
+        TokenType: 'Bearer'
 
     BadRequestError:
       summary: Erro de requisição inválida
       value:
         httpCode: 400
         internalCode: BAD_REQUEST
-        message: Erro na requisição
+        message: E-mail é obrigatório
 
     UnauthorizedError:
       summary: Erro de autenticação
       value:
         httpCode: 401
         internalCode: UNAUTHORIZED
-        message: Não autorizado
+        message: Authentication failed
 
     InternalServerError:
       summary: Erro interno do servidor
