@@ -4,10 +4,11 @@ import {
   AuthenticationResultType,
   CognitoIdentityProviderClient,
 } from '@aws-sdk/client-cognito-identity-provider';
+import { AuthenticationError } from '../domain/CustomErrors';
 
 export interface ClientRepository {
   authorizeByLogin(email: string, password: string): Promise<AuthenticationResultType | undefined>;
-  createUser(email: string, password: string, name?: string): Promise<{ userSub: string; email: string }>;
+  createUser(email: string, password: string): Promise<{ userSub: string; email: string }>;
 }
 
 export class CognitoClientRepository implements ClientRepository {
@@ -28,10 +29,14 @@ export class CognitoClientRepository implements ClientRepository {
         },
       }),
     );
-    return authResult.AuthenticationResult;
+    const authenticationResult = authResult.AuthenticationResult;
+
+    if (authenticationResult) return authenticationResult;
+
+    throw new AuthenticationError('Invalid email or password');
   }
 
-  async createUser(email: string, password: string, name?: string) {
+  async createUser(email: string, password: string) {
     const userAttributes = [
       {
         Name: 'email',
@@ -42,13 +47,6 @@ export class CognitoClientRepository implements ClientRepository {
         Value: 'true',
       },
     ];
-
-    if (name) {
-      userAttributes.push({
-        Name: 'name',
-        Value: name,
-      });
-    }
 
     const createResult = await this.client.send(
       new AdminCreateUserCommand({

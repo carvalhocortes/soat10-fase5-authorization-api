@@ -7,8 +7,9 @@ let createUserUseCase: CreateUser;
 
 export const createUserHandler: APIGatewayProxyHandler = async (event) => {
   try {
-    const { email, password, name } = JSON.parse(event.body || '{}');
+    if (!event.body) throw new ValidationError('Request body is required');
 
+    const { email, password } = JSON.parse(event.body);
     if (!email) throw new ValidationError('E-mail é obrigatório');
     if (!password) throw new ValidationError('Senha é obrigatória');
 
@@ -16,7 +17,7 @@ export const createUserHandler: APIGatewayProxyHandler = async (event) => {
       createUserUseCase = new CreateUser(new CognitoClientRepository());
     }
 
-    const result = await createUserUseCase.execute({ email, password, name });
+    const result = await createUserUseCase.execute({ email, password });
 
     return { statusCode: 201, body: JSON.stringify(result) };
   } catch (err: any) {
