@@ -84,34 +84,6 @@ describe('createUserHandler', () => {
     });
   });
 
-  it('should successfully create user without name', async () => {
-    const requestBody = JSON.stringify({
-      email: 'test@example.com',
-      password: 'password123',
-    });
-
-    const mockCreateUserResult = {
-      userSub: 'user-sub-456',
-      email: 'test@example.com',
-      message: 'Usuário criado com sucesso',
-    };
-
-    mockExecute.mockResolvedValue(mockCreateUserResult);
-
-    const event = createMockEvent(requestBody);
-    const context = createMockContext();
-
-    const result = (await createUserHandler(event, context, () => {})) as APIGatewayProxyResult;
-
-    expect(result.statusCode).toBe(201);
-    expect(JSON.parse(result.body)).toEqual(mockCreateUserResult);
-    expect(mockExecute).toHaveBeenCalledWith({
-      email: 'test@example.com',
-      password: 'password123',
-      name: undefined,
-    });
-  });
-
   it('should return 400 when email is missing', async () => {
     const requestBody = JSON.stringify({
       password: 'password123',
@@ -158,7 +130,6 @@ describe('createUserHandler', () => {
     const requestBody = JSON.stringify({
       email: 'invalid-email',
       password: 'password123',
-      name: 'Test User',
     });
 
     mockExecute.mockRejectedValue(new ValidationError('E-mail inválido'));
@@ -181,7 +152,6 @@ describe('createUserHandler', () => {
     const requestBody = JSON.stringify({
       email: 'test@example.com',
       password: 'password123',
-      name: 'Test User',
     });
 
     mockExecute.mockRejectedValue(new Error('Cognito service error'));

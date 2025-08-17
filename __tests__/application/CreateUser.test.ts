@@ -44,33 +44,6 @@ describe('CreateUser', () => {
       expect(result).toEqual(expectedResponse);
     });
 
-    it('should successfully create user without name parameter', async () => {
-      const request: CreateUserRequest = {
-        email: 'test@example.com',
-        password: 'password123',
-      };
-
-      const mockRepositoryResult = {
-        userSub: 'user-sub-456',
-        email: 'test@example.com',
-      };
-
-      mockRepository.createUser.mockResolvedValue(mockRepositoryResult);
-
-      const result = await createUserUseCase.execute(request);
-
-      expect(mockRepository.createUser).toHaveBeenCalledWith(request.email, request.password);
-      expect(mockRepository.createUser).toHaveBeenCalledTimes(1);
-
-      const expectedResponse: CreateUserResponse = {
-        userSub: 'user-sub-456',
-        email: 'test@example.com',
-        message: 'Usuário criado com sucesso',
-      };
-
-      expect(result).toEqual(expectedResponse);
-    });
-
     it('should throw ValidationError when email is missing', async () => {
       const request: CreateUserRequest = {
         email: '',
@@ -127,7 +100,6 @@ describe('CreateUser', () => {
       const request: CreateUserRequest = {
         email: '',
         password: '',
-        name: 'Test User',
       };
 
       await expect(createUserUseCase.execute(request)).rejects.toThrow(ValidationError);
