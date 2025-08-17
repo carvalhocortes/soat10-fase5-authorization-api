@@ -13,7 +13,7 @@ export class Authenticate {
   async execute(dto: AuthenticateDto) {
     const client = new Client(dto.email, dto.password);
     try {
-      return this.repo.authorizeByLogin(client.email, client.password);
+      return await this.repo.authorizeByLogin(client.email, client.password);
     } catch {
       throw new AuthenticationError('Authentication failed');
     }
