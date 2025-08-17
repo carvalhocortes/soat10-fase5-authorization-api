@@ -189,4 +189,20 @@ describe('authHandler', () => {
       message: 'Generic error',
     });
   });
+
+  it('should return 400 when request body is null', async () => {
+    const event = createMockEvent(null as any);
+    const context = createMockContext();
+
+    const result = (await authHandler(event, context, () => {})) as APIGatewayProxyResult;
+
+    expect(result.statusCode).toBe(400);
+    const responseBody = JSON.parse(result.body);
+    expect(responseBody).toEqual({
+      httpCode: 400,
+      internalCode: 'BAD_REQUEST',
+      message: 'Request body is required',
+    });
+    expect(mockExecute).not.toHaveBeenCalled();
+  });
 });
