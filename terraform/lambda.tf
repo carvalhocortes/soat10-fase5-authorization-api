@@ -16,7 +16,24 @@ resource "aws_lambda_function" "auth" {
   environment {
     variables = {
       COGNITO_USER_POOL_ID = aws_cognito_user_pool.this.id
-      JWT_SECRET_PARAM     = var.ssm_jwt_secret_name
+      JWT_SECRET_PARAM     = aws_ssm_parameter.jwt_secret.name
+    }
+  }
+}
+
+resource "aws_lambda_function" "create_user" {
+  function_name    = "create-user"
+  filename         = "./lambda.zip"
+  source_code_hash = filebase64sha256("./lambda.zip")
+  handler          = "index.createUserHandler"
+  runtime          = "nodejs22.x"
+  role             = "arn:aws:iam::${var.aws_account_id}:role/LabRole"
+  timeout          = 10
+
+  environment {
+    variables = {
+      COGNITO_USER_POOL_ID = aws_cognito_user_pool.this.id
+      JWT_SECRET_PARAM     = aws_ssm_parameter.jwt_secret.name
     }
   }
 }
