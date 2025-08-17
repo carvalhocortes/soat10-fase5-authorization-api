@@ -17,12 +17,12 @@ export class CreateUser {
   constructor(private repository: ClientRepository) {}
 
   async execute(request: CreateUserRequest): Promise<CreateUserResponse> {
-    const { email, password, name } = request;
+    const { email, password } = request;
 
     if (!email) throw new ValidationError('E-mail é obrigatório');
     if (!password) throw new ValidationError('Senha é obrigatória');
 
-    const result = await this.repository.createUser(email, password, name);
+    const result = await this.repository.createUser(email, password);
 
     return {
       userSub: result.userSub,
