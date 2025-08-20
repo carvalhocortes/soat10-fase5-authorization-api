@@ -10,7 +10,7 @@ export const createUserHandler: APIGatewayProxyHandler = async (event) => {
     if (!event.body) throw new ValidationError('Request body is required');
 
     const { email, password } = JSON.parse(event.body);
-    if (!email) throw new ValidationError('E-mail é obrigatório');
+    if (!email) throw new ValidationError('Campo "email" é obrigatório');
     if (!password) throw new ValidationError('Campo "password" é obrigatório');
 
     if (!createUserUseCase) {
