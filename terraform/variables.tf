@@ -12,10 +12,6 @@ variable "ssm_jwt_secret_name" {
   default     = "/auth/jwt-secret"
 }
 
-variable "backend_s3" {
-  type = string
-}
-
 variable "ssm_jwt_secret_value" {
   type = string
 }
