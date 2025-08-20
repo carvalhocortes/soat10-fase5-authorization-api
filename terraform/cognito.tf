@@ -16,7 +16,7 @@ resource "aws_cognito_user_pool" "this" {
 resource "aws_cognito_user_pool_client" "this" {
   name                         = "auth-client"
   user_pool_id                 = aws_cognito_user_pool.this.id
-  explicit_auth_flows          = ["ALLOW_USER_PASSWORD_AUTH"]
+  explicit_auth_flows          = ["ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_USER_PASSWORD_AUTH"]
   generate_secret              = false
   allowed_oauth_flows          = []
   allowed_oauth_scopes         = []

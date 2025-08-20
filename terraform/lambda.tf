@@ -16,6 +16,7 @@ resource "aws_lambda_function" "auth" {
   environment {
     variables = {
       COGNITO_USER_POOL_ID = aws_cognito_user_pool.this.id
+      COGNITO_CLIENT_ID    = aws_cognito_user_pool_client.this.id
       JWT_SECRET_PARAM     = aws_ssm_parameter.jwt_secret.name
     }
   }
@@ -33,6 +34,7 @@ resource "aws_lambda_function" "create_user" {
   environment {
     variables = {
       COGNITO_USER_POOL_ID = aws_cognito_user_pool.this.id
+      COGNITO_CLIENT_ID    = aws_cognito_user_pool_client.this.id
       JWT_SECRET_PARAM     = aws_ssm_parameter.jwt_secret.name
     }
   }

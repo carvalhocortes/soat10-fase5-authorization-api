@@ -7,3 +7,13 @@ output "jwt_param_name" {
   description = "Name of the SSM Parameter storing the JWT secret"
   value       = aws_ssm_parameter.jwt_secret.name
 }
+
+output "COGNITO_USER_POOL_ID" {
+  description = "ID of the Cognito User Pool"
+  value       = aws_cognito_user_pool.this.id
+}
+
+output "COGNITO_CLIENT_ID" {
+  description = "ID of the Cognito User Pool Client"
+  value       = aws_cognito_user_pool_client.this.id
+}
