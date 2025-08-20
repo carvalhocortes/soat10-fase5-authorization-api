@@ -1,7 +1,7 @@
 resource "aws_cognito_user_pool" "this" {
   name = "auth-pool"
 
-  auto_verified_attributes = ["email", "password"]
+  auto_verified_attributes = ["email"]
 
   password_policy {
     minimum_length                   = 6
@@ -21,8 +21,8 @@ resource "aws_cognito_user_pool_client" "this" {
   allowed_oauth_flows          = []
   allowed_oauth_scopes         = []
   supported_identity_providers = ["COGNITO"]
-  access_token_validity        = 480 # 480 minutos
-  refresh_token_validity       = 7   # 7 dias
+  access_token_validity        = 12
+  refresh_token_validity       = 7
 
   prevent_user_existence_errors = "ENABLED"
 }
