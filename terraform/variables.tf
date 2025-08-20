@@ -1,9 +1,9 @@
 variable "aws_region" {
-  type        = string
+  type = string
 }
 
 variable "aws_account_id" {
-  type    = string
+  type = string
 }
 
 variable "ssm_jwt_secret_name" {
@@ -13,9 +13,9 @@ variable "ssm_jwt_secret_name" {
 }
 
 variable "backend_s3" {
-  type    = string
+  type = string
 }
 
 variable "ssm_jwt_secret_value" {
-  type    = string
+  type = string
 }
