@@ -5,8 +5,6 @@ gh secret set AWS_SESSION_TOKEN -b"$aws_session_token"
 export $(grep -v '^\s*#' ./.env | grep -E '^\s*[A-Za-z_][A-Za-z0-9_]*\s*=' | sed 's/ = /=/g')
 gh secret set TF_VAR_aws_account_id -b"$AWS_ACCOUNT_ID"
 export TF_VAR_aws_account_id="$AWS_ACCOUNT_ID"
-gh secret set TF_VAR_backend_s3 -b"$BACKEND_S3"
-export TF_VAR_backend_s3="$BACKEND_S3"
 gh secret set TF_VAR_ssm_jwt_secret_value -b"$SSM_JWT_SECRET_VALUE"
 export TF_VAR_ssm_jwt_secret_value="$SSM_JWT_SECRET_VALUE"
 gh secret set TF_VAR_aws_region -b"$AWS_REGION"
