@@ -11,7 +11,7 @@ export const createUserHandler: APIGatewayProxyHandler = async (event) => {
 
     const { email, password } = JSON.parse(event.body);
     if (!email) throw new ValidationError('E-mail é obrigatório');
-    if (!password) throw new ValidationError('Senha é obrigatória');
+    if (!password) throw new ValidationError('Campo "password" é obrigatório');
 
     if (!createUserUseCase) {
       createUserUseCase = new CreateUser(new CognitoClientRepository());

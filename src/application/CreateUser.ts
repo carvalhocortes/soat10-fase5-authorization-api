@@ -19,8 +19,8 @@ export class CreateUser {
   async execute(request: CreateUserRequest): Promise<CreateUserResponse> {
     const { email, password } = request;
 
-    if (!email) throw new ValidationError('E-mail é obrigatório');
-    if (!password) throw new ValidationError('Senha é obrigatória');
+    if (!email) throw new ValidationError('Campo "email" é obrigatório');
+    if (!password) throw new ValidationError('Campo "password" é obrigatório');
 
     const result = await this.repository.createUser(email, password);
 

@@ -52,7 +52,7 @@ describe('CreateUser', () => {
       };
 
       await expect(createUserUseCase.execute(request)).rejects.toThrow(ValidationError);
-      await expect(createUserUseCase.execute(request)).rejects.toThrow('E-mail é obrigatório');
+      await expect(createUserUseCase.execute(request)).rejects.toThrow('Campo "email" é obrigatório');
 
       expect(mockRepository.createUser).not.toHaveBeenCalled();
     });
@@ -65,7 +65,7 @@ describe('CreateUser', () => {
       };
 
       await expect(createUserUseCase.execute(request)).rejects.toThrow(ValidationError);
-      await expect(createUserUseCase.execute(request)).rejects.toThrow('E-mail é obrigatório');
+      await expect(createUserUseCase.execute(request)).rejects.toThrow('Campo "email" é obrigatório');
 
       expect(mockRepository.createUser).not.toHaveBeenCalled();
     });
@@ -78,7 +78,7 @@ describe('CreateUser', () => {
       };
 
       await expect(createUserUseCase.execute(request)).rejects.toThrow(ValidationError);
-      await expect(createUserUseCase.execute(request)).rejects.toThrow('Senha é obrigatória');
+      await expect(createUserUseCase.execute(request)).rejects.toThrow('Campo "password" é obrigatório');
 
       expect(mockRepository.createUser).not.toHaveBeenCalled();
     });
@@ -91,7 +91,7 @@ describe('CreateUser', () => {
       };
 
       await expect(createUserUseCase.execute(request)).rejects.toThrow(ValidationError);
-      await expect(createUserUseCase.execute(request)).rejects.toThrow('Senha é obrigatória');
+      await expect(createUserUseCase.execute(request)).rejects.toThrow('Campo "password" é obrigatório');
 
       expect(mockRepository.createUser).not.toHaveBeenCalled();
     });
@@ -103,7 +103,7 @@ describe('CreateUser', () => {
       };
 
       await expect(createUserUseCase.execute(request)).rejects.toThrow(ValidationError);
-      await expect(createUserUseCase.execute(request)).rejects.toThrow('E-mail é obrigatório');
+      await expect(createUserUseCase.execute(request)).rejects.toThrow('Campo "email" é obrigatório');
 
       expect(mockRepository.createUser).not.toHaveBeenCalled();
     });

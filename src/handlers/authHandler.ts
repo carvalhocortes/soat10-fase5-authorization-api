@@ -10,8 +10,8 @@ export const authHandler: APIGatewayProxyHandler = async (event) => {
     if (!event.body) throw new ValidationError('Request body is required');
 
     const { email, password } = JSON.parse(event.body);
-    if (!email) throw new ValidationError('E-mail é obrigatório');
-    if (!password) throw new ValidationError('Senha é obrigatória');
+    if (!email) throw new ValidationError('Campo "email" é obrigatório');
+    if (!password) throw new ValidationError('Campo "password" é obrigatório');
 
     if (!authenticateUseCase) {
       authenticateUseCase = new Authenticate(new CognitoClientRepository());

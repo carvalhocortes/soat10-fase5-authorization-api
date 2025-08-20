@@ -99,7 +99,7 @@ describe('authHandler', () => {
     expect(responseBody).toEqual({
       httpCode: 400,
       internalCode: 'BAD_REQUEST',
-      message: 'E-mail é obrigatório',
+      message: 'Campo "email" é obrigatório',
     });
     expect(mockExecute).not.toHaveBeenCalled();
   });
@@ -119,7 +119,7 @@ describe('authHandler', () => {
     expect(responseBody).toEqual({
       httpCode: 400,
       internalCode: 'BAD_REQUEST',
-      message: 'Senha é obrigatória',
+      message: 'Campo "password" é obrigatório',
     });
     expect(mockExecute).not.toHaveBeenCalled();
   });

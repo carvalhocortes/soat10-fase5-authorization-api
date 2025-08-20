@@ -285,7 +285,7 @@ components:
       value:
         httpCode: 400
         internalCode: BAD_REQUEST
-        message: E-mail é obrigatório
+        message: Campo "email" é obrigatório
 
     UnauthorizedError:
       summary: Erro de autenticação

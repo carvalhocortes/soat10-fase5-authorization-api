@@ -85,7 +85,7 @@ describe('Integration Tests', () => {
           password: 'password123',
           name: 'Test User',
         }),
-      ).rejects.toThrow('E-mail é obrigatório');
+      ).rejects.toThrow('Campo "email" é obrigatório');
 
       expect(mockRepo.createUser).not.toHaveBeenCalled();
     });
