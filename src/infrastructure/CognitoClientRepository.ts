@@ -1,6 +1,7 @@
 import {
   AdminCreateUserCommand,
   AdminInitiateAuthCommand,
+  AdminSetUserPasswordCommand,
   AuthenticationResultType,
   CognitoIdentityProviderClient,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -16,12 +17,13 @@ export class CognitoClientRepository implements ClientRepository {
     region: process.env.AWS_REGION,
   });
   private poolId = process.env.COGNITO_USER_POOL_ID!;
+  private clientId = process.env.COGNITO_CLIENT_ID!;
 
   async authorizeByLogin(email: string, password: string) {
     const authResult = await this.client.send(
       new AdminInitiateAuthCommand({
         UserPoolId: this.poolId,
-        ClientId: process.env.COGNITO_CLIENT_ID!,
+        ClientId: this.clientId,
         AuthFlow: 'ADMIN_NO_SRP_AUTH',
         AuthParameters: {
           USERNAME: email,
@@ -29,11 +31,12 @@ export class CognitoClientRepository implements ClientRepository {
         },
       }),
     );
+
     const authenticationResult = authResult.AuthenticationResult;
 
-    if (authenticationResult) return authenticationResult;
+    if (!authenticationResult) throw new AuthenticationError('Invalid email or password');
 
-    throw new AuthenticationError('Invalid email or password');
+    return authenticationResult;
   }
 
   async createUser(email: string, password: string) {
@@ -55,6 +58,15 @@ export class CognitoClientRepository implements ClientRepository {
         TemporaryPassword: password,
         MessageAction: 'SUPPRESS',
         UserAttributes: userAttributes,
+      }),
+    );
+
+    await this.client.send(
+      new AdminSetUserPasswordCommand({
+        UserPoolId: this.poolId,
+        Username: email,
+        Password: password,
+        Permanent: true,
       }),
     );
 

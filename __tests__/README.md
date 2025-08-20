@@ -85,7 +85,7 @@ O arquivo `setupTests.ts` configura automaticamente as variáveis de ambiente ne
 
 - `AWS_REGION`
 - `COGNITO_USER_POOL_ID`
-- `COGNITO_CLIENT_ID`
+- `COGNITO_USER_POOL_ID`
 
 ### Mocks
 
