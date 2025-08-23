@@ -3,8 +3,7 @@ name: 'Terraform'
 on:
   push:
     branches:
-      # voltar para main quando tiver pronto
-      - NaoRodarAAction
+      - main
   pull_request:
 
 jobs:
