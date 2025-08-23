@@ -173,10 +173,6 @@ terraform.tfvars
 *.tfplan
 *.auto.tfvars
 
-# Lambda package
-lambda.zip
-*.zip
-
 # AWS
 .aws/
 
