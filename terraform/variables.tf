@@ -1,17 +1,10 @@
 variable "aws_region" {
-  type = string
+  type    = string
+  default = "us-west-2"
 }
 
 variable "aws_account_id" {
-  type = string
+  type    = string
+  default = "548226336065"
 }
 
-variable "ssm_jwt_secret_name" {
-  description = "SSM Parameter Store name for JWT secret"
-  type        = string
-  default     = "/auth/jwt-secret"
-}
-
-variable "ssm_jwt_secret_value" {
-  type = string
-}
