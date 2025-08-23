@@ -36,9 +36,6 @@ export class CognitoClientRepository implements ClientRepository {
 
     if (!authenticationResult) throw new AuthenticationError('Invalid email or password');
 
-    //    Buscar a chave pública (JWKS) do Cognito no endpoint:
-    //    https://cognito-idp.<REGION>.amazonaws.com/<USER_POOL_ID>/.well-known/jwks.json
-
     return authenticationResult;
   }
 

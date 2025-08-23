@@ -2,6 +2,8 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import { CreateUser } from '../application/CreateUser';
 import { ValidationError } from '../domain/CustomErrors';
 import { CognitoClientRepository } from '../infrastructure/CognitoClientRepository';
+import { ErrorMiddleware } from '../infrastructure/middlewares/errorMiddleware';
+import { ResponseMiddleware } from '../infrastructure/middlewares/responseMiddleware';
 
 let createUserUseCase: CreateUser;
 
@@ -19,16 +21,8 @@ export const createUserHandler: APIGatewayProxyHandler = async (event) => {
 
     const result = await createUserUseCase.execute({ email, password });
 
-    return { statusCode: 201, body: JSON.stringify(result) };
+    return ResponseMiddleware.handle(result);
   } catch (err: any) {
-    const statusCode = err.statusCode || 500;
-    return {
-      statusCode,
-      body: JSON.stringify({
-        httpCode: statusCode,
-        internalCode: err.internalCode || 'INTERNAL_SERVER_ERROR',
-        message: err.message,
-      }),
-    };
+    return ErrorMiddleware.handle(err);
   }
 };
