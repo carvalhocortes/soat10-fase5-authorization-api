@@ -168,14 +168,6 @@ terraform plan
 terraform apply
 ```
 
-### Variáveis de Ambiente
-
-| Variável               | Descrição                  | Exemplo                      |
-| ---------------------- | -------------------------- | ---------------------------- |
-| `COGNITO_USER_POOL_ID` | ID do User Pool do Cognito | `us-east-1_xxxxxxxxx`        |
-| `COGNITO_CLIENT_ID`    | ID do Client do Cognito    | `xxxxxxxxxxxxxxxxxxxxxxxxxx` |
-| `AWS_REGION`           | Região da AWS              | `us-east-1`                  |
-
 ## 🧪 Testes
 
 ### Estratégia de Testes

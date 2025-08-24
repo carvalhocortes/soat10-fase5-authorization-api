@@ -8,7 +8,7 @@ import {
 import { AuthenticationError } from '../domain/CustomErrors';
 
 export interface ClientRepository {
-  authorizeByLogin(email: string, password: string): Promise<AuthenticationResultType | undefined>;
+  authorizeByLogin(email: string, password: string): Promise<AuthenticationResultType>;
   createUser(email: string, password: string): Promise<{ userSub: string; email: string }>;
 }
 

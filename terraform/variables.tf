@@ -1,9 +1,9 @@
-variable "aws_region" {
+variable "AWS_REGION" {
   type    = string
   default = "us-west-2"
 }
 
-variable "aws_account_id" {
+variable "AWS_ACCOUNT_ID" {
   type    = string
   default = "548226336065"
 }

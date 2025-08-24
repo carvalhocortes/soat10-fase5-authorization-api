@@ -1,3 +1,2 @@
-// Re-export handlers
-export { authHandler } from './handlers/authHandler';
-export { createUserHandler } from './handlers/createUserHandler';
+export { authHandler } from './infrastructure/handlers/authHandler';
+export { createUserHandler } from './infrastructure/handlers/createUserHandler';
