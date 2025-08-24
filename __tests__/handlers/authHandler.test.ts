@@ -18,7 +18,7 @@ jest.mock('../../src/infrastructure/CognitoClientRepository', () => ({
 
 // Now import the handler
 import { AuthenticationError, ValidationError } from '../../src/domain/CustomErrors';
-import { authHandler } from '../../src/handlers/authHandler';
+import { authHandler } from '../../src/infrastructure/handlers/authHandler';
 
 describe('authHandler', () => {
   beforeEach(() => {

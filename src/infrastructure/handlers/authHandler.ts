@@ -1,9 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { Authenticate } from '../application/Authenticate';
-import { ValidationError } from '../domain/CustomErrors';
-import { CognitoClientRepository } from '../infrastructure/CognitoClientRepository';
-import { ErrorMiddleware } from '../infrastructure/middlewares/errorMiddleware';
-import { ResponseMiddleware } from '../infrastructure/middlewares/responseMiddleware';
+import { Authenticate } from '../../application/Authenticate';
+import { ValidationError } from '../../domain/CustomErrors';
+import { CognitoClientRepository } from '../../infrastructure/CognitoClientRepository';
+import { ErrorMiddleware } from '../../infrastructure/middlewares/errorMiddleware';
+import { ResponseMiddleware } from '../../infrastructure/middlewares/responseMiddleware';
 
 let authenticateUseCase: Authenticate;
 
